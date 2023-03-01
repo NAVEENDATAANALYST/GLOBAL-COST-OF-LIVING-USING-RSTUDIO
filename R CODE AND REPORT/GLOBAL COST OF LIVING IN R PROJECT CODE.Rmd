@@ -1,0 +1,419 @@
+---
+title: "CSE3505 FOUNDATION OF DATA ANALYTICS J COMPONENT REPORT"
+output:
+  html_document: default
+  pdf_document: default
+date: "2022-11-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TITLE: STATISTICAL ANALYSIS OF LIVING IN CANADA
+
+***
+TEAM MEMBERS:
+
+20BPS1137 - KANCHARLA NAVEEN KUMAR
+
+20BPS1142 - DIPANSU ROUT
+
+***
+PROBLEM STATEMENT:
+
+Our main goal in analyzing the data sets comes down to see how multiple variables in a data set affects each other. As we already saw by analyzing cost of living and quality of living differs greatly cities to cities when compared on large scale data like healthcare, expenditure etc. Then we take the whole world for comparison on GDP basis while coming down to focus on a single country like Canada because many factors play role in its statistics being one of the highest in the world.
+
+***
+DATA SOURCE:
+
+https://data.world/atbventures/qualityoflife
+
+https://data.world/atbventures/qualityoflife/workspace/file?filename=GDP_World.csv
+
+https://data.world/atbventures/qualityoflife/workspace/file?filename=HealthSpending_byprovince.csv
+
+https://data.world/atbventures/qualityoflife/workspace/file?filename=GDP_World_10yr_weightedaverage.csv
+
+https://data.world/atbventures/qualityoflife/workspace/file?filename=stats_expenseindicators_canada_province.csv
+
+***
+OBJECTIVES:
+
+GDP enables policymakers and central banks to judge whether the economy is contracting or expanding and promptly take necessary action. It also allows policymakers, economists, and businesses to analyze the impact of variables such as monetary and fiscal policy, economic shocks, and tax and spending plans.
+
+Health-related quality of life (HRQL) focuses on the impact of health on a person's ability to live a fulfilling life. HRQL represents a broad concepts of physical, psychological with social functioning and well-being that includes both positive and negative aspects.
+
+Government spends a considerable portion of its income towards provision of social security benefits such as unemployment allowances old age pension, insurance benefits, sickness benefit, medical benefit, etc. Such benefits reduce the desire to work. In other words they act as disincentive to work.
+
+***
+ANALYSIS:
+
+Gross domestic product tracks the health of a country's economy. It represents the value of all goods and services produced over a specific time period within a country's borders. Economists can use GDP to determine whether an economy is growing or experiencing a recession. Investors can use GDP to make investments decisions—a bad economy often means lower earnings and stock prices. Healthcare expenditure can result in better provision of health opportunities, which can strengthen human capital and improve the productivity, thereby contributing to economic performance. It is therefore important to assess the phenomenon of healthcare spending in a country.
+
+
+***
+IMPORTING THE NECESSARY LIBRARIRES:
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+***
+READING THE DATA AND GIVING A DESCRIPTION OF THE DATA.
+
+Analyzing global per capita GDP provides insight into global economic prosperity and developments.
+Small,rich and more developed industrial countries tend to have the highest per capita GDP.
+
+WHEN THE NA VALUES ARE PRESENT IT SHOULD BE CLEANED USING ANY OF THE CLEANING METHODS. AND HERE NA.OMIT IS USED.
+
+```{r}
+
+
+df3 <- read.csv('GDP_World.csv')
+dim(df3)
+
+sum(is.na(df3)) #THERE ARE NA VALUES PRESENT USE COMPLETE.CASES AND CLEAN THE DATA
+df3_clean <- na.omit(df3)
+sum(is.na(df3_clean)) #DATA IS CLEANED
+dim(df3_clean)
+
+View(df3_clean)
+
+```
+
+***
+STATISTICAL ANALYSIS SHOWS THE SITUATION OF MANY COUNTRIES COMPARED TO THE MEAN VALUE OF GDP AND GDP PER CAPITA
+
+```{r}
+#STATISTICAL ANALYSIS
+
+summary(df3_clean)
+#YOU CAN SEE THAT THE MAX GDP PER CAPITA IS 132701 AND LUXEMBOURG IS HAVING THE HIGHEST GDP PER CAPITA AND MEAN GDP PER CAPITA IS 9675 WHICH SHOWS THATS THERE ARE MANY COUNTRIES LYING UNDER THE MARGIN GDP PER CAPITA AND THE MINIMUM GDP PER CAPITA IS 17.12 WHICH SHOWS THAT COMBODIA IS HAVING THE MINIMUM GDP PER CAPITA 
+
+```
+
+***
+MANIPULATING THE DATA FOR THE VISUALISATION.
+ANALYZING AS PER YEAR AND COMPARING WITH PREVIOUS YEARS.
+STATISTICAL ANALYSIS SHOWS HOW IN RECENT YEARS THE MEAN GDP CHANGED EITHER INCREASED OR DECREASED. AND IT SHOWS THAT WHAT COUNTRY IS HAVING MAXIMUM AND MINIMUM GDP.
+
+```{r}
+
+DF1 <- subset(df3_clean,df3_clean$Year==2018)
+summary(DF1)
+#MEAN VALUE IS 14498 WHICH IS AVERAGE GDP PER CAPITA COMPARED TO MAXIMUM GDP PER CAPITA
+
+#WORLD GDP IN THE YEAR 2022 WITH THE YEAR 2018
+df4 <- subset(df3_clean,df3_clean$Year==2022)
+summary(df4)
+#YOU CAN SEE THAT MEAN GDP PER CAPITA IS INCREASED OVER THE YEARS
+
+DF <- subset(df3_clean,df3_clean$Year==2024)
+summary(DF)
+#IT SHOWS THAT THERE WILL BE A GRADUAL INCREASE IN MEAN GDP PER CAPITA WHICH SHOWS THAT THERE ARE SOME GOOD DEVELOPMENTS HAPPENING IN MANY COUNTRIES
+
+df5 <- head(df4,15)
+
+```
+
+***
+VISUALISATION ON THE DATA SET TAKEN.
+VISUALIZING USING HISTOGRAM AND SCATTER PLOT AND INFERING THE RESULTS
+
+```{r}
+
+hist(df3_clean$GDP_percapita, main="GDP per capita")
+#THERE ARE MANY COUNTRIES UNDER 10000 GDP PER CAPITA AND FOLLOWED BY FEWER COUNTRIES IN THE RANGE OF 20000 TO 80000 WHICH SHOWS THAT MANY COUNTRIES ARE STILL IN DEVELOPING STAGE 
+
+plot(y=df3_clean$GDP_percapita,x=df3_clean$Year,main="GDP per capita VS year")
+#UNDER THE RANGE OF 10000 GDP PER CAPITA FROM THE YEAR 1980 TO 2020 THERE ARE MANY COUNTRIES BUT THERE ARE FEWER COUNTRIES HAVING MORE THAN 40000 GDP PER CAPITA AND IS IS INCREASING GRADUALLY PER EVERY YEAR THE RECENT GDP PER CAPITA IS HIGHEST AMONG ALL ANY OTHER YEARS
+
+```
+
+***
+VISUALIZING FOR THE YEAR 2018
+VISUALIZING USING BARPLOT AND HISTOGRAM AND INFERING THE RESULTS
+
+```{r}
+
+#FOR 2018
+barplot(DF1$GDP_percapita, main="GDP per capita in the year 2018")
+
+
+hist(DF1$GDP_percapita, main="GDP per capita in the year 2018")
+#THERE ARE MANY COUNTRIES IN THE RANGE OF 20000 GDP PER CAPITA AND MANY COUNTRIES IN THE RANGE OF 20000 TO 100000 SHOWS THAT MANY COUNTRIES ARE NOT RICH AND NOT DEVELOPED
+
+ggplot(DF1,aes(x=Country))+geom_bar(aes(fill=GDP_percapita))+ggtitle("Distribution of GDP per capita in the year 2018")
+
+
+```
+
+***
+VISUALIZING FOR THE YEAR 2022.
+VISUALIZING USING BARPLOT AND HISTOGRAM AND INFERING THE RESULTS.
+
+```{r}
+
+#FOR YEAR 2022
+barplot(df4$GDP_percapita, main="GDP per capita in the year 2022")
+#RECENTLY THERE IS GRADUAL INCREASE IN GDP PER CAPITA SOME COUNTRIES ARE ABOVE 20000 WHICH SHOWS THAT SOME DEVELOPMENTS HAVE HAPPENED IN RECENT YEARS
+
+hist(df4$GDP_percapita, main="GDP per capita in the year 2022")
+#IT SHOWS THAT MANY COUNTRIES ARE IN THE RANGE 0 TO 20000 AND FROM 20000 TO 100000 RANGE SOME COUNTRIES ARE HAVING GOOD GDP PER CAPITA
+
+ggplot(df4,aes(x=Country))+geom_bar(aes(fill=GDP_percapita))+ggtitle("Distribution of GDP per capita in the year 2022")
+#AS YOU CAN SEE THAT THERE ARE FEWER LINES HAVING LIGHT BLUE COLOR SHOWING THAT ONLY SOME COUNTRIES ARE HAVING HIGHEST GDP PER CAPITA
+
+ggplot(df5,aes(x=Country))+geom_bar(aes(fill=GDP_percapita))+ggtitle("Distribution of GDP per capita in the year 2022")
+#TAKING THE FIRST 10 ROWS AND VISUALIZING THEM USING BAR PLOT. THERE ARE 2 LINES HAVING LIGHT BLUE WHICH SHOWS THAT THEY ARE HAVING HIGH GDP PER CAPITA
+
+max(df5$GDP_percapita)
+
+counts <- table(df4$Country, df4$GDP_percapita)
+barplot(counts, main="Distribution of country VS GDP per capita in the year 2022",xlab="Capita",legend = rownames(counts))
+#SHOWS THE DISTRIBUTION OF GDP PER CAPITA COUNTRYWISE 
+
+```
+
+***
+PREDICTING WHAT WILL HAPPEN IN 2024 USING THE PREVIOUS DATA.
+
+```{r}
+
+#FOR 2024
+barplot(DF$GDP_percapita, main="GDP per capita in the year 2024")
+#WHAT IS PREDICTED FOR 2024 IS THAT IT WILL REACH MAXIMUM GDP PER CAPITA EVER RECORDED IN ANY OTHER YEAR OUT OF 179 COUNTRIES THERE ARE MANY COUNTRIES UNDER 20000 GDP PER CAPITA AND FEWER COUNTRIES IN THE RANGE OF 20000 TO 80000
+
+hist(DF$GDP_percapita, main="GDP per capita in the year 2024")
+#THSI SHOWS THAT THE GDP PER CAPITA STILL WILL BE THE SAME AND MANY COUNTRIES WILL STILL IN BE UNDER 20000 GDP PER CAPITA AND NOT LIKE THE PREVIOUS YEARS THERE ARE FAR MORE COUNTRIES IN THE RANGE 20000 TO 100000
+
+ggplot(DF,aes(x=Country))+geom_bar(aes(fill=GDP_percapita))+ggtitle("Distribution of GDP per capita in year 2024")
+#THIS SHOWS THAT THERE ARE MANY COUNTRIES THAT WILL REMAIN SAME IN THE RANGE OF 20000 GDP PER CAPITA
+
+
+```
+
+***
+2.
+READING THE DATASET AND GIVING A DESCRIPTION OF THE DATA SET
+THIS DATASET IS CLEAN
+
+```{r}
+df2 <- read.csv('GDP_World_10yr_weightedaverage.csv')
+dim(df2)
+View(df2)
+sum(is.na(df2)) #DATA IS CLEAN
+
+```
+
+***
+STATISTICAL ANALYSIS SHOWS THAT WHERE EXACTLY IS THE COUNTRY PLACED IN THE WORLDS POSITION.
+
+```{r}
+
+summary(df2)
+#THE MEAN VALUE FOR WEIGHTED AVG GDP FOR 10 YEARS IS 13938 AND THE COUNTRY HAVING IT IS LUXEMBOURG AND MINIMUM VALUE IS 95 AND THE COUNTRY HAVING IT IS SYRIA SO IT SHOWS THAT THE AVERAGE OF 10 YEARS SHOWS THAT STILL THERE ARE MANY COUNTRIES UNDER MEAN VALUE 
+#THE MEAN VALUE FOR WEIGHTED AVG COMPARED TO CANADA IS -32823 NEGATIVE VALUE WHICH TELLS THAT POPULATION IS GROWING FASTER THAN ITS GDP AND COMPARED TO CANADA MANY COUNTRIES ARE NOT DEVELOPED AND THEY ARE NOT RICH COUNTRIES
+
+```
+
+***
+VISUALIZATION ANALYSIS USING BARPLOT, HISTOGRAM, LINE PLOT AND SCATTER PLOT.
+
+```{r}
+
+barplot(df2$WeightAvg_ComparedCanada)
+#FROM THE PLOT WE CAN SEE THAT MANY COUNTRIES ARE HAVING NEGATIVE VALUES SHOWING THAT COMPARED TO CANADA MANY COUNTRIES ARE NOT RICH AND NOT DEVELOPED
+
+hist(df2$WeightAvg_ComparedCanada)
+#THE DISTRIBUTION SHOWS THAT THERE ARE MANY VALUES IN RANGE -46666 TO -40000 AND MANY MORE COUNTRIES IN THE RANGE -40000 TO 0 COMPARED TO CANADA
+
+plot(df2$WeightAvg_ComparedCanada,type="l",col=1)
+#THE GRAPH IS GRADUALLY INCREASING UPTO 60000 BUT THERE ARE VALUES IN THE GRAPH HAVING NEGATIVE GDP VALUES SHOWING THAT THE POPULATION IS GROWING FASTER COMPARED TO CANADA
+
+ggplot(df2,aes(x=Weighted_avgGDP_10year,y=WeightAvg_ComparedCanada))+geom_line()+ggtitle("Distribution of weighted average for 10 years for all countries vs compared to canada")
+#THIS PLOT SHOWS THAT THE WEIGHTED AVG GDP FOR 10 YEARS AND WHEN COMPARED TO CANADA GIVES A STRAIGHT LINE SHOWING THAT THE GDP IS GROWING CONSISTENTLY WITH COMPARED TO CANADA
+
+plot(df2$Weighted_avgGDP_10year,df2$WeightAvg_ComparedCanada,col=1)
+#GIVES A SCATTER PLOT SHOWING THAT THE DISTRIBUTION BETWEEN THEM IS CONSISTENT
+
+
+```
+
+***
+3.
+READING THE DATASET AND GIVING THE DESCRIPTION OF THE DATASET
+THERE ARE NA VALUES SO CLEANING IT USING NA.OMIT METHOD
+
+```{r}
+
+df <- read.csv('stats_expenseindicators_canada_province.csv')
+dim(df)
+View(df)
+
+sum(is.na(df)) #DATA IS NOT CLEAN
+df <- df[complete.cases(df),] #CLEANING THE DATA
+sum(is.na(df)) #DATA IS CLEAN
+
+```
+
+***
+STATISTICAL ANALYSIS 
+
+```{r}
+
+summary(df)
+
+str(df)
+
+
+DF1 <- unique(df$Expenditures)
+#GIVES THE UNIQUE VALUES OF THE EXPENDITURES AND WE WILL FORMAT IT AS TABLE AND CONVERT TO DATAFRAME
+DF <- table(df$Expenditures)
+DF <- data.frame(DF)
+
+#TAKING A SAMPLE OF 10 VALUES TO MAKE INFERENCE
+lf <- sample_n(DF,10)
+lf
+
+cx <- unique(df$GEO)
+#RETURNS ONLY UNIQUE VALUES BY REOMVING ALL THE DUPLICATES OF THE EXISTING FACTORS
+
+cx <- data.frame(cx)
+j <- 1
+cnt <- 0
+for(x in 1:dim(df)[1]){
+  if(j>dim(cx)[1]){
+    break
+  }
+  if (df$GEO[x]==cx$cx[j]){
+    cnt <- cnt+df$VALUE[x]
+  }
+  else{
+    print(df$GEO[x])
+    print(cnt)
+    cnt <- 0
+    j <- j+1
+  }
+}
+#PRINTS GEOGRAPHICAL LOCATIONS WITH THEIR RESPECTIVE DOLLAR SPENT
+#CANADA IS SPENDING THE MOST DOLLARS COMPARED TO OTHER REGIONS
+
+cx <- unique(df$Expenditures)
+cx <- data.frame(cx)
+j <- 1
+cnt <- 0
+for(x in 1:50){
+  if(j>dim(cx)[1]){
+    break
+  }
+  if (df$Expenditures[x]==cx$cx[j]){
+    cnt <- cnt+df$VALUE[x]
+  }
+  else{
+    print(df$Expenditures[x])
+    print(cnt)
+    cnt <- 0
+    j <- j+1
+  }
+}
+#PRINTS EXPENDITURES  WITH THEIR RESPECTIVE DOLLAR SPENT
+#MORE DOLLARS ARE SPENT ON CURRENT CONSUMPTION FOLLOWED BY FOOD EXPENDITURES
+#IT SHOWS THAT IN CANADA MORE COST IS SPENDING ON CURRENT CONSUMPTION AND LESS COST ON SHELTER
+
+```
+
+***
+VISUALIZATION ANALYSIS
+
+```{r}
+
+barplot(lf$Freq,names.arg = lf$Var1,las=2)
+#THE FREQUENCY FOR VARIOUS EXPENDITURES ARE HAVING FREQUENCY AROUND 100 AND PARKING, HANGAR AND AIRPORT FEES, BOAT STORAGE AND HARBOUR DUES IS HAVING LOW FREQUENCY
+
+plot(DF$Freq)
+#FROM THE PLOT WE CAN SEE MORE FREQUENCY LIES AROUND 100
+
+```
+
+***
+4.READING THE DATASET AND GIVING THE DESCRIPTION OF THE DATASET
+THERE ARE NA VALUES SO CLEANING IT USING COMPLETE.CASES METHOD
+
+```{r}
+df1 <- read.csv('HealthSpending_byprovince.csv')
+dim(df1)
+View(df1)
+
+sum(is.na(df1)) #DATA IS HAVING NA VALUES
+df <- df[complete.cases(df1),] #CLEANING DATA
+sum(is.na(df1)) #DATA IS CLEAN
+
+```
+
+***
+STATISTICAL ANALYSIS
+
+```{r}
+
+summary(df1)
+
+str(df1)
+
+```
+
+***
+VISUALIZATION ANALYSIS BY TAKING RANDOM VALUES AND PLOTTING IT USING BAR PLOT
+
+```{r}
+
+l <- unique(df1$Use.of.Funds)
+l
+#SHOWS WHERE EXACTLY THE FUNDSA ARE BEING USED
+
+lf <- sample_n(df1,size = 10)
+lf
+
+ggplot(lf,aes(x=Current.dollars),las=2)+geom_bar(aes(fill=Use.of.Funds))+ggtitle("Distribution of dollars sepnt vs use of funds")+theme(axis.text.x = element_text(angle = 90))
+#THE PLOT SHOWS THAT HOW MANY DOLLARS IS BEING USED BY EACH SECTOR.
+
+
+lf <- sample_n(df1,size = 10)
+ggplot(lf,aes(x=Current.dollars))+geom_bar(aes(fill=Year))+ggtitle("Distribution of dollars spent vs year")+theme(axis.text.x = element_text(angle = 90))
+#THE PLOT SHOWS THAT IN WHICH YEAR HOW MANY DOLLARS ARE BEING SPENT
+
+
+lf <- sample_n(df1,size = 10)
+ggplot(lf,aes(x=Current.dollars.per.capita),las=2)+geom_bar(aes(fill=Use.of.Funds))+ggtitle("Distribution of dollars per capita vs use of funds")
+#THE PLOT SHOWS THAT WHICH SECTOR IS HAVING THE CURRENT DOLLARS PER CAPITA HIGHER AND LOWER
+
+
+lf <- sample_n(df1,size = 10)
+ggplot(lf,aes(x=Current.dollars.per.capita))+geom_bar(aes(fill=Year))+ggtitle("Distribution of dollars per capita vs years")
+#THE PLOT SHOWS THAT IN WHICH YEAR HOW MUCH DOLLARS PER CAPITA IS SEPNT
+
+
+lf <- sample_n(df1,size = 30)
+ggplot(lf,aes(x=Year))+geom_bar(aes(fill=Use.of.Funds))+ggtitle("Distribution of year vs use of funds")+theme(axis.text.x = element_text(angle = 90))
+#THE PLOT SHOWS THAT IN WHICH YEAR WHERE THE FUNDS ARE BEING USED
+
+
+lf <- sample(df1$Use.of.Funds,20)
+x <- data.frame(table(lf))
+barplot(x$Freq,names.arg = x$lf)
+#THE PLOT SHOWS THAT WHAT SECTOR IS USING THE MOST FUNDS
+
+plot(df1$Current.dollars.per.capita)
+#WE CAN SEE THAT THE CURRENT DOLLARS PER CAPITA IS HIGHER BETWEEN 0 TO 100 AND ALSO FROM 100 TO 400 A LITTLE BIT HIGHER
+
+plot(df1$Current.dollars)
+
+```
+
+***
+CONCLUSION:
+
+Our findings suggest that, in general, there is a positive association between healthcare spending and the economic indicators of labor productivity, personal income, per capita GDP, and other spending. Also, personal healthcare spending adversely impacts time spent on purchases of goods and services.Different states require varied investment in personal health expenditure, even if they have the same level of labor productivity. Overall, the study contributes to the growing literature on healthcare expenditure and economic performance. It outlines how the government can allocate healthcare expenditure in key dimensions that can stimulate economic growth while also improving the well-being of the population. It is also critical that policy makers implement appropriate policies at the macroeconomic level—targeted at public health expenditure and economic development. Overall, in light of the potential benefits of healthcare to the economy, universal access to healthcare is an area that warrants further research. 
+
