@@ -1,2 +1,2 @@
-# GLOBAL-COST-OF-LIVING-USING-RSTUDIO
+# GLOBAL-COST-OF-LIVING-USING-R
 This is my pre final year Data Analytics project
